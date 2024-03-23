@@ -172,6 +172,28 @@ describe('recommendations', function(){
   // });
 });
 
+describe('user who likes this also like that', function(){
+  beforeEach(function(done){
+    client.flushdbAsync().then(() => {
+      return raccoon.liked('chris', 'batman');
+    }).then(() => {
+      return raccoon.liked('larry', 'batman');
+    }).then(() => {
+      return raccoon.liked('larry', 'superman');
+    }).then(() => {
+      done();
+    });
+  });
+  describe('item based recommandation like', function(){
+    it('should return the other items users liked', function(done){
+      raccoon.usersWhoLikedAlsoLiked('batman').then((recs) => {
+        assert.equal(recs[0], 'superman');
+        done();
+      });
+    });
+  });
+});
+
 describe('stats1', function(){
   before(function(done){
     client.flushdbAsync().then(() => {
